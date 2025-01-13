@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Card, CardContent } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllMovies } from "../../helpers/api-helpers";
@@ -6,55 +6,143 @@ import CradLayout from "./CradLayout";
 
 const HomeLayout = () => {
   const [movies, setMovies] = useState();
+
   useEffect(() => {
     getAllMovies()
       .then((data) => setMovies(data))
       .catch((err) => console.log(err));
   }, []);
+
   console.log(movies);
+
   return (
-    <Box width="100%" height="100vh" marginTop={2} margin="auto">
-      <Box margin={"auto"} width="80%" height="40%" padding={2} display="flex">
-        <img
-          src="https://i.ytimg.com/vi/yEinBUJG2RI/maxresdefault.jpg"
-          alt="Rocketry"
-          width="100%"
-          height="100%"
-        />
+    <Box
+      width="100%"
+      height="100%"
+      minHeight="100vh"
+      bgcolor="#121212"
+      color="#f5f5f5"
+    >
+      {/* Header Section */}
+      <Box
+        margin="auto"
+        width="100%"
+        height="60vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          backgroundImage:
+            'url("https://i.ytimg.com/vi/yEinBUJG2RI/maxresdefault.jpg")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "brightness(0.8)",
+        }}
+      >
+        <Typography
+          variant="h2"
+          textAlign="center"
+          color="#ffffff"
+          fontWeight="bold"
+          sx={{
+            textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+          }}
+        >
+          Welcome to MovieLand
+        </Typography>
       </Box>
-      <Box padding={5} margin="auto">
-        <Typography variant="h4" textAlign={"center"}>
+
+      {/* Latest Releases Section */}
+      <Box padding={5} margin="auto" textAlign="center">
+        <Typography
+          variant="h4"
+          color="#ff5722"
+          fontWeight="bold"
+          sx={{
+            borderBottom: "3px solid #ff5722",
+            display: "inline-block",
+            marginBottom: "20px",
+          }}
+        >
           Latest Releases
         </Typography>
       </Box>
+
+      {/* Movies Grid */}
       <Box
-        gap={5}
+        gap={4}
         margin="auto"
-        width="80%"
-        flexWrap={"wrap"}
-        display="flex"
-        justifyContent={"center"}
+        width="85%"
+        display="grid"
+        gridTemplateColumns="repeat(auto-fit, minmax(250px, 1fr))"
+        justifyContent="center"
       >
         {movies &&
-          movies
-            .slice(0, 4)
-            .map((movie, index) => (
-              <CradLayout
-                id={movie._id}
-                title={movie.title}
-                releaseDate={movie.releaseDate}
-                posterUrl={movie.posterUrl}
-                description={movie.description}
-                key={index}
-              />
-            ))}
+          movies.slice(0, 4).map((movie, index) => (
+            <Card
+              key={index}
+              sx={{
+                bgcolor: "#1e1e1e",
+                color: "#f5f5f5",
+                borderRadius: "15px",
+                overflow: "hidden",
+                boxShadow: "0px 4px 15px rgba(0,0,0,0.3)",
+                transition: "transform 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <CardContent>
+                <Box
+                  component="img"
+                  src={movie.posterUrl}
+                  alt={movie.title}
+                  width="100%"
+                  height="200px"
+                  sx={{
+                    objectFit: "cover",
+                    borderBottom: "2px solid #ff5722",
+                  }}
+                />
+                <Typography variant="h6" mt={2} fontWeight="bold">
+                  {movie.title}
+                </Typography>
+                <Typography variant="body2" color="#bdbdbd" mt={1}>
+                  {movie.releaseDate}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  mt={1}
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {movie.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
       </Box>
-      <Box display={"flex"} padding={5} margin="auto">
+
+      {/* View All Movies Button */}
+      <Box display="flex" padding={5} justifyContent="center" marginTop={4}>
         <Button
-          variant="outlined"
+          variant="contained"
           LinkComponent={Link}
           to="/movies"
-          sx={{ margin: "auto", color: "#2b2d42" }}
+          sx={{
+            bgcolor: "#ff5722",
+            color: "#ffffff",
+            fontWeight: "bold",
+            "&:hover": {
+              bgcolor: "#e64a19",
+            },
+          }}
         >
           View All Movies
         </Button>
